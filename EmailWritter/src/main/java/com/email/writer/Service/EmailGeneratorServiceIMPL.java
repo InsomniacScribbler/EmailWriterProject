@@ -1,6 +1,7 @@
 package com.email.writer.Service;
 
 import com.email.writer.Entity.EmailRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -9,6 +10,13 @@ import java.util.Map;
 
 @Service
 public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
+
+    @Value("${gemini.api.url}")
+    private String GeminiAPIURL;
+    @Value("${gemini.api.key}")
+    private String GeminiAPIKey;
+
+    @Override
     public String generateEmailRequest(EmailRequest emailRequest) {
         //buuild prompt for the Gemini API
         String prompt = buildPrompt(emailRequest);
