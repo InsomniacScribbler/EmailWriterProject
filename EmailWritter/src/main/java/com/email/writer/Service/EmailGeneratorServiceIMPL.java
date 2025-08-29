@@ -44,7 +44,7 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
 
     private String buildPrompt(EmailRequest emailRequest) {
         StringBuilder prompt= new StringBuilder();
-        prompt.append("Generate a professional Email Reply for the following content. Please don't generate a subject line");
+        prompt.append("Generate a professional Email Reply for the following content. Please don't generate a subject line. Also Add a good Salutation appropriate to the solution and use bullets when required");
         if(emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()){
             prompt.append("\n use a ").append(emailRequest.getTone()).append(" tone.");
 
@@ -56,27 +56,28 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
 
     @Override
     public String generateEmailRespone(EmailRequest emailRequest) {
-        //buuild prompt for the Gemini API
+        if (emailRequest.getEmailContent() == null || emailRequest.getEmailContent().isEmpty()) {
+            return "It looks like the email content is empty. Please provide the email text you want a reply for.";
+        }
+
         String prompt = buildPrompt(emailRequest);
 
-        //craft a request in the format
         Map<String,Object> requestBody = Map.of(
-                "contents",new Object[]{
-                        Map.of("parts",new Object[]{
-                                Map.of("text",prompt)
+                "contents", new Object[]{
+                        Map.of("parts", new Object[]{
+                                Map.of("text", prompt)
                         })
                 }
         );
-        //do request
+
         String response = webClient.post()
-                .uri(GeminiAPIURL+GeminiAPIKey)
-                .header("Content-Type","application/json")
+                .uri(GeminiAPIURL + GeminiAPIKey)
+                .header("Content-Type", "application/json")
                 .bodyValue(requestBody)
-                .retrieve().bodyToMono(String.class).block();
+                .retrieve().bodyToMono(String.class)
+                .block();
 
-        //Extract respones
         return extractResposnseContent(response);
-
-        //Return
     }
+
 }

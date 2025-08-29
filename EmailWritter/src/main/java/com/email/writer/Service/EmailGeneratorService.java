@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 
 public interface EmailGeneratorService {
-    public String generateEmailRequest(EmailRequest emailRequest);
+    public String generateEmailRespone(EmailRequest emailRequest);
 }
