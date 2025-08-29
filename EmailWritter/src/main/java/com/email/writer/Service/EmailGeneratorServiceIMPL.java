@@ -21,38 +21,13 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
     @Value("${gemini.api.key}")
     private String GeminiAPIKey;
 
+
+
+    // constructer to inject webclient at the run time using parameterised constructor
     public EmailGeneratorServiceIMPL(WebClient webClient) {
         this.webClient = webClient;
     }
 
-    // constructer to inject webclient at the run time using parameterised constructor
-
-
-    @Override
-    public String generateEmailRequest(EmailRequest emailRequest) {
-        //buuild prompt for the Gemini API
-        String prompt = buildPrompt(emailRequest);
-
-        //craft a request in the format
-        Map<String,Object> requestBody = Map.of(
-                "contents",new Object[]{
-                        Map.of("parts",new Object[]{
-                                Map.of("text",prompt)
-                        })
-                }
-        );
-        //do request
-        String response = webClient.post()
-                .uri(GeminiAPIURL+GeminiAPIKey)
-                .header("Content-Type","application/json")
-                .retrieve().bodyToMono(String.class).block();
-
-        //Extract respones
-        return extractResposnseContent(response);
-
-        //Return
-
-    }
 
     private String extractResposnseContent(String response) {
         try {
@@ -74,5 +49,34 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
             prompt.append("\n use a ").append(emailRequest.getTone()).append(" tone.");
 
         }
+        prompt.append("\nUser email content: ").append(emailRequest.getEmailContent());
+        return prompt.toString();
+
+    }
+
+    @Override
+    public String generateEmailRespone(EmailRequest emailRequest) {
+        //buuild prompt for the Gemini API
+        String prompt = buildPrompt(emailRequest);
+
+        //craft a request in the format
+        Map<String,Object> requestBody = Map.of(
+                "contents",new Object[]{
+                        Map.of("parts",new Object[]{
+                                Map.of("text",prompt)
+                        })
+                }
+        );
+        //do request
+        String response = webClient.post()
+                .uri(GeminiAPIURL+GeminiAPIKey)
+                .header("Content-Type","application/json")
+                .bodyValue(requestBody)
+                .retrieve().bodyToMono(String.class).block();
+
+        //Extract respones
+        return extractResposnseContent(response);
+
+        //Return
     }
 }
