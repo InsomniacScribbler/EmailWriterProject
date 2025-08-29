@@ -16,6 +16,7 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
         Map<String,Object> requestBody = Map.of(
                 "contents",new Object[]{
                         Map.of("parts",new Object[]{
+                                Map.of("text",prompt)
 
                         })
                 }
@@ -28,7 +29,7 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
         StringBuilder prompt= new StringBuilder();
         prompt.append("Generate a professional Email Reply for the following content. Please don't generate a subject line");
         if(emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()){
-            prompt.append("\n use a Tone: "+emailRequest.getTone());
+            prompt.append("\n use a ").append(emailRequest.getTone()).append(" tone.");
 
         }
     }
