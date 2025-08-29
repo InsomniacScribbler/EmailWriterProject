@@ -3,6 +3,7 @@ package com.email.writer.Service;
 import com.email.writer.Entity.EmailRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,10 +12,16 @@ import java.util.Map;
 @Service
 public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
 
+    private final WebClient webClient;
+
     @Value("${gemini.api.url}")
     private String GeminiAPIURL;
     @Value("${gemini.api.key}")
     private String GeminiAPIKey;
+
+    public EmailGeneratorServiceIMPL(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     @Override
     public String generateEmailRequest(EmailRequest emailRequest) {
