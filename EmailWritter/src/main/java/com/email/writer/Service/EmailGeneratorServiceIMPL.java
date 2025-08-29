@@ -23,6 +23,9 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
         this.webClient = webClient;
     }
 
+    // constructer to inject webclient at the run time using parameterised constructor
+
+
     @Override
     public String generateEmailRequest(EmailRequest emailRequest) {
         //buuild prompt for the Gemini API
@@ -36,9 +39,13 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
                 }
         );
         //do request
-
+        String response = webClient.post()
+                .uri(GeminiAPIURL+GeminiAPIKey)
+                .header("Content-Type","application/json")
+                .retrieve().bodyToMono(String.class).block();
 
         //return respones
+
     }
 
     private String buildPrompt(EmailRequest emailRequest) {
