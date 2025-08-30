@@ -44,7 +44,7 @@ public class EmailGeneratorServiceIMPL implements EmailGeneratorService {
 
     private String buildPrompt(EmailRequest emailRequest) {
         StringBuilder prompt= new StringBuilder();
-        prompt.append("Generate a professional Email Reply for the following content. Please don't generate a subject line. Also Add a good Salutation appropriate to the solution and use bullets when required");
+        prompt.append("Generate a professional Email Reply for the following content. Please don't generate a subject line. Also Add a good Salutation appropriate to the solution and use bullets when required. Give me only the Mail body directly, no unwanted text");
         if(emailRequest.getTone() != null && !emailRequest.getTone().isEmpty()){
             prompt.append("\n use a ").append(emailRequest.getTone()).append(" tone.");
 
